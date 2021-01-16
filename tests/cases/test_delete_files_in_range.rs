@@ -201,3 +201,16 @@ fn test_delete_files_in_ranges() {
     let mut iter = db.iter();
     assert!(!iter.seek(SeekKey::Start).unwrap());
 }
+
+#[test]
+fn test_get_sst_files_in_range() {
+    let path = tempdir_with_prefix("_rust_rocksdb_get_ssts");
+    let path_str = path.path().to_str().unwrap();
+    let db = initial_data(path_str);
+    //let mut metadata = SSTMetaDatas::default();
+    // construct snapshot before DeleteFilesInRange
+    // delete sst2
+    let cf = db.cf_handle("default").unwrap();
+    //let mut levels = db.get_column_family_meta_data(cf).get_levels()
+    db.get_cf_ssts_metadata(cf, b"key2", b"key7").unwrap();
+}

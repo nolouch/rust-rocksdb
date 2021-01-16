@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use crocksdb_ffi::{
-    self, DBBackupEngine, DBCFHandle, DBCache, DBCompressionType, DBEnv, DBInstance,
-    DBLevelMetaDatas, DBMapProperty, DBPinnableSlice, DBSequentialFile, DBStatisticsHistogramType,
-    DBStatisticsTickerType, DBTablePropertiesCollection, DBTitanDBOptions, DBWriteBatch,
+    self, DBBackupEngine, DBCFHandle, DBCache, DBCompressionType, DBEnv, DBInstance, DBMapProperty,
+    DBPinnableSlice, DBSequentialFile, DBStatisticsHistogramType, DBStatisticsTickerType,
+    DBTablePropertiesCollection, DBTitanDBOptions, DBWriteBatch,
 };
 use libc::{self, c_char, c_int, c_void, size_t};
 use librocksdb_sys::DBMemoryAllocator;
@@ -50,10 +50,6 @@ use write_batch::WriteBatch;
 
 pub struct CFHandle {
     inner: *mut DBCFHandle,
-}
-
-pub struct SSTMetadatas {
-    inner: *mut DBLevelMetaDatas,
 }
 
 impl CFHandle {
@@ -1394,25 +1390,23 @@ impl DB {
     pub fn get_cf_ssts_metadata(
         &self,
         cf: &CFHandle,
-        metadata: &SSTMetadatas,
         start_key: &[u8],
         end_key: &[u8],
-    ) -> Result<(), String> {
+    ) -> Result<String, String> {
         unsafe {
             if self.is_titan() {
                 panic!("not support titan");
             } else {
-                ffi_try!(crocksdb_get_cf_range_files_metadata(
+                let res = crocksdb_ffi::crocksdb_get_cf_range_files_metadata(
                     self.inner,
                     cf.inner,
-                    metadata.inner,
                     start_key.as_ptr(),
                     start_key.len() as size_t,
                     end_key.as_ptr(),
-                    end_key.len() as size_t
-                ));
+                    end_key.len() as size_t,
+                );
+                Ok(format!("testing {}", res))
             }
-            Ok(())
         }
     }
 

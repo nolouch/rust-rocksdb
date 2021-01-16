@@ -3697,6 +3697,16 @@ extern "C" {
     );
 }
 extern "C" {
+    pub fn crocksdb_get_cf_range_files_metadata(
+        db: *mut crocksdb_t,
+        column_family: *mut crocksdb_column_family_handle_t,
+        start_key: *const libc::c_char,
+        start_key_len: usize,
+        limit_key: *const libc::c_char,
+        limit_key_len: usize,
+    ) -> libc::c_int;
+}
+extern "C" {
     pub fn crocksdb_delete_files_in_ranges_cf(
         db: *mut crocksdb_t,
         cf: *mut crocksdb_column_family_handle_t,

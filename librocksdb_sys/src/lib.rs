@@ -146,8 +146,6 @@ pub struct DBColumnFamilyMetaData(c_void);
 #[repr(C)]
 pub struct DBLevelMetaData(c_void);
 #[repr(C)]
-pub struct DBLevelMetaDatas(c_void);
-#[repr(C)]
 pub struct DBSstFileMetaData(c_void);
 #[repr(C)]
 pub struct DBCompactionOptions(c_void);
@@ -1344,6 +1342,14 @@ extern "C" {
         err: *mut *mut c_char,
     );
     pub fn crocksdb_column_family_handle_id(column_family_handle: *mut DBCFHandle) -> u32;
+    pub fn crocksdb_get_cf_range_files_metadata(
+        db: *mut DBInstance,
+        cf: *mut DBCFHandle,
+        start_key: *const u8,
+        start_keys_len: size_t,
+        limit_key: *const u8,
+        limit_key_len: size_t,
+    ) -> u64;
     pub fn crocksdb_column_family_handle_destroy(column_family_handle: *mut DBCFHandle);
     pub fn crocksdb_list_column_families(
         db: *const Options,
@@ -1489,21 +1495,12 @@ extern "C" {
         include_end: bool,
         err: *mut *mut c_char,
     );
-    pub fn crocksdb_get_cf_range_files_metadata(
-        db: *mut DBInstance,
-        cf: *mut DBCFHandle,
-        metadata: *mut DBLevelMetaDatas,
-        start_key: *const u8,
-        start_keys_len: size_t,
-        limit_key: *const u8,
-        limit_key_len: size_t,
-        errptr: *mut *mut c_char,
-    );
+
     pub fn crocksdb_delete_files_in_ranges_cf(
         db: *mut DBInstance,
         cf: *mut DBCFHandle,
-        start_keys: *const *const u8,
-        start_keys_lens: *const size_t,
+        start_key: *const *const u8,
+        start_key_len: *const size_t,
         limit_keys: *const *const u8,
         limit_keys_lens: *const size_t,
         num_ranges: size_t,
