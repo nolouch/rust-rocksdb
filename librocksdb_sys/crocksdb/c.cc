@@ -4706,6 +4706,18 @@ void crocksdb_delete_files_in_range_cf(
           include_end));
 }
 
+void crocksdb_get_cf_range_files_metadata(
+    crocksdb_t* db, crocksdb_column_family_handle_t* column_family, crocksdb_livefiles_t* metadata,
+    const char* start_key, size_t start_key_len, const char* limit_key, size_t limit_key_len, char** errptr){
+  Slice a, b;
+  SaveError(
+    errptr,
+    GetCFFilesMetaInRange(
+      db->rep, column_family->rep, &metadata->rep,
+      (start_key ? (a = Slice(start_key, start_key_len), &a) : nullptr),
+      (limit_key ? (b = Slice(limit_key, limit_key_len), &b) : nullptr)));
+}
+
 void crocksdb_delete_files_in_ranges_cf(
     crocksdb_t* db, crocksdb_column_family_handle_t* cf,
     const char* const* start_keys, const size_t* start_keys_lens,

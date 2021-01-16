@@ -1868,6 +1868,10 @@ extern C_ROCKSDB_LIBRARY_API void crocksdb_delete_files_in_range_cf(
     const char* start_key, size_t start_key_len, const char* limit_key,
     size_t limit_key_len, unsigned char include_end, char** errptr);
 
+extern C_ROCKSDB_LIBRARY_API void crocksdb_get_cf_range_files_metadata(
+    crocksdb_t* db, crocksdb_column_family_handle_t* column_family, crocksdb_livefiles_t* metadata,
+    const char* start_key, size_t start_key_len, const char* limit_key, size_t limit_key_len);
+
 extern C_ROCKSDB_LIBRARY_API void crocksdb_delete_files_in_ranges_cf(
     crocksdb_t* db, crocksdb_column_family_handle_t* cf,
     const char* const* start_keys, const size_t* start_keys_lens,

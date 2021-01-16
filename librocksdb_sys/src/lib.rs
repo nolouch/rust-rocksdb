@@ -146,6 +146,8 @@ pub struct DBColumnFamilyMetaData(c_void);
 #[repr(C)]
 pub struct DBLevelMetaData(c_void);
 #[repr(C)]
+pub struct DBLevelMetaDatas(c_void);
+#[repr(C)]
 pub struct DBSstFileMetaData(c_void);
 #[repr(C)]
 pub struct DBCompactionOptions(c_void);
@@ -1487,6 +1489,16 @@ extern "C" {
         include_end: bool,
         err: *mut *mut c_char,
     );
+    pub fn crocksdb_get_cf_range_files_metadata(
+        db: *mut DBInstance,
+        cf: *mut DBCFHandle,
+        metadata: *mut DBLevelMetaDatas,
+        start_key: *const u8,
+        start_keys_len: size_t,
+        limit_key: *const u8,
+        limit_key_len: size_t,
+        errptr: *mut *mut c_char,
+    );
     pub fn crocksdb_delete_files_in_ranges_cf(
         db: *mut DBInstance,
         cf: *mut DBCFHandle,
@@ -1498,6 +1510,7 @@ extern "C" {
         include_end: bool,
         errptr: *mut *mut c_char,
     );
+
     pub fn crocksdb_create_map_property() -> *mut DBMapProperty;
     pub fn crocksdb_destroy_map_property(info: *mut DBMapProperty);
     pub fn crocksdb_get_map_property_cf(
