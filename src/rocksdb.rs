@@ -1392,13 +1392,13 @@ impl DB {
         cf: &CFHandle,
         start_key: &[u8],
         end_key: &[u8],
-    ) -> Result<String, String> {
+    ) -> Result<&[u8], String> {
         unsafe {
             if self.is_titan() {
                 panic!("not support titan");
             } else {
                 let metas = crocksdb_ffi::crocksdb_livefiles_meta_create();
-                let res = crocksdb_ffi::crocksdb_get_cf_range_files_metadata(
+                let val = crocksdb_ffi::crocksdb_get_cf_range_files_metadata(
                     self.inner,
                     cf.inner,
                     metas,
@@ -1407,7 +1407,8 @@ impl DB {
                     end_key.as_ptr(),
                     end_key.len() as size_t,
                 );
-                Ok(format!("testing2 {}", res))
+                let mut val_len: size_t = 0;
+                Ok(slice::from_raw_parts(val, val_len))
             }
         }
     }

@@ -213,5 +213,5 @@ fn test_get_sst_files_in_range() {
     let cf = db.cf_handle("default").unwrap();
     //let mut levels = db.get_column_family_meta_data(cf).get_levels()
     let t = db.get_cf_ssts_metadata(cf, b"", b"z").unwrap();
-    println!("{}", t);
+    println!("{}", String::from_utf8_lossy(t));
 }
