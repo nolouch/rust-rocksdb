@@ -212,6 +212,6 @@ fn test_get_sst_files_in_range() {
     // delete sst2
     let cf = db.cf_handle("default").unwrap();
     //let mut levels = db.get_column_family_meta_data(cf).get_levels()
-    let t = db.get_cf_ssts_metadata(cf, b"key2", b"key7").unwrap();
+    let t = db.get_cf_ssts_metadata(cf, b"", b"z").unwrap();
     println!("{}", t);
 }

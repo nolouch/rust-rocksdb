@@ -14,6 +14,7 @@
 #include <limits>
 
 #include "db/column_family.h"
+#include <iostream>
 #include "rocksdb/cache.h"
 #include "rocksdb/cloud/cloud_env_options.h"
 #include "rocksdb/compaction_filter.h"
@@ -1336,6 +1337,10 @@ const crocksdb_livefiles_t* crocksdb_livefiles(crocksdb_t* db) {
   crocksdb_livefiles_t* result = new crocksdb_livefiles_t;
   db->rep->GetLiveFilesMetaData(&result->rep);
   return result;
+}
+
+crocksdb_livefiles_t* crocksdb_livefiles_meta_create() {
+  return new crocksdb_livefiles_t;
 }
 
 void crocksdb_compact_range(crocksdb_t* db, const char* start_key,
@@ -4707,9 +4712,21 @@ void crocksdb_delete_files_in_range_cf(
 }
 
 uint64_t crocksdb_get_cf_range_files_metadata(
-    crocksdb_t* db, crocksdb_column_family_handle_t* column_family, 
+    crocksdb_t* db, crocksdb_column_family_handle_t* column_family, crocksdb_livefiles_t* metadata,
     const char* start_key, size_t start_key_len, const char* limit_key, size_t limit_key_len ){
-  return 12;
+     Slice a, b;
+  GetCFFilesMetaInRange(
+      db->rep, column_family->rep, &metadata->rep,
+      (start_key ? (a = Slice(start_key, start_key_len), &a) : nullptr),
+      (limit_key ? (b = Slice(limit_key, limit_key_len), &b) : nullptr));
+  for (auto iter = metadata->rep.begin(); iter != metadata->rep.end(); iter++) {
+    std::cout << "\nSst metadata:\n"
+         << "name: " << (*iter).name << "\n"
+         << "smallestKey: " << (*iter).smallestkey << "\n"
+         << "largestKey: " << (*iter).largestkey << "\n"
+         << "level: " << (*iter).level << "\n" << std::endl;
+  }
+  return 14;
 }
 
 void crocksdb_delete_files_in_ranges_cf(
@@ -4780,6 +4797,8 @@ crocksdb_pinnableslice_t* crocksdb_get_pinned(
   }
   return v;
 }
+
+
 
 crocksdb_pinnableslice_t* crocksdb_get_pinned_cf(
     crocksdb_t* db, const crocksdb_readoptions_t* options,

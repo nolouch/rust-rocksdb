@@ -1397,15 +1397,17 @@ impl DB {
             if self.is_titan() {
                 panic!("not support titan");
             } else {
+                let metas = crocksdb_ffi::crocksdb_livefiles_meta_create();
                 let res = crocksdb_ffi::crocksdb_get_cf_range_files_metadata(
                     self.inner,
                     cf.inner,
+                    metas,
                     start_key.as_ptr(),
                     start_key.len() as size_t,
                     end_key.as_ptr(),
                     end_key.len() as size_t,
                 );
-                Ok(format!("testing {}", res))
+                Ok(format!("testing2 {}", res))
             }
         }
     }

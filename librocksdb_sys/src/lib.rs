@@ -52,6 +52,8 @@ pub struct ColumnFamilyDescriptor(c_void);
 #[repr(C)]
 pub struct DBInstance(c_void);
 #[repr(C)]
+pub struct DBLiveFilesMetaData(c_void);
+#[repr(C)]
 pub struct DBWriteOptions(c_void);
 #[repr(C)]
 pub struct DBReadOptions(c_void);
@@ -1345,11 +1347,13 @@ extern "C" {
     pub fn crocksdb_get_cf_range_files_metadata(
         db: *mut DBInstance,
         cf: *mut DBCFHandle,
+        live_files_meta: *mut DBLiveFilesMetaData,
         start_key: *const u8,
         start_keys_len: size_t,
         limit_key: *const u8,
         limit_key_len: size_t,
     ) -> u64;
+    pub fn crocksdb_livefiles_meta_create() -> *mut DBLiveFilesMetaData;
     pub fn crocksdb_column_family_handle_destroy(column_family_handle: *mut DBCFHandle);
     pub fn crocksdb_list_column_families(
         db: *const Options,
