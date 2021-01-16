@@ -3704,7 +3704,7 @@ extern "C" {
         start_key_len: usize,
         limit_key: *const libc::c_char,
         limit_key_len: usize,
-    ) -> libc::c_int;
+    ) -> u64;
 }
 extern "C" {
     pub fn crocksdb_delete_files_in_ranges_cf(
