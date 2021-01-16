@@ -216,4 +216,6 @@ fn test_get_sst_files_in_range() {
     let max_key: &[u8] = &[0xFF];
     let t = db.get_cf_ssts_metadata(cf, min_key, max_key).unwrap();
     println!("new: {}", String::from_utf8_lossy(t));
+    let t = db.get_cf_ssts_metadata(cf, min_key, min_key).unwrap();
+    println!("empty: {}", String::from_utf8_lossy(t));
 }
