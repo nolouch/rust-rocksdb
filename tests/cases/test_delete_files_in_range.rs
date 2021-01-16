@@ -212,6 +212,8 @@ fn test_get_sst_files_in_range() {
     // delete sst2
     let cf = db.cf_handle("default").unwrap();
     //let mut levels = db.get_column_family_meta_data(cf).get_levels()
-    let t = db.get_cf_ssts_metadata(cf, b"", b"z").unwrap();
-    println!("{}", String::from_utf8_lossy(t));
+    let min_key: &[u8] = &[];
+    let max_key: &[u8] = &[0xFF];
+    let t = db.get_cf_ssts_metadata(cf, min_key, max_key).unwrap();
+    println!("new: {}", String::from_utf8_lossy(t));
 }

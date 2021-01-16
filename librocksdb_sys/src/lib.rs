@@ -1352,6 +1352,7 @@ extern "C" {
         start_keys_len: size_t,
         limit_key: *const u8,
         limit_key_len: size_t,
+        size: *mut size_t,
     ) -> *const u8;
     pub fn crocksdb_livefiles_meta_create() -> *mut DBLiveFilesMetaData;
     pub fn crocksdb_column_family_handle_destroy(column_family_handle: *mut DBCFHandle);

@@ -1393,6 +1393,8 @@ impl DB {
         start_key: &[u8],
         end_key: &[u8],
     ) -> Result<&[u8], String> {
+        let mut val_len: size_t = 0;
+        let val_len_ptr: *mut size_t = &mut val_len;
         unsafe {
             if self.is_titan() {
                 panic!("not support titan");
@@ -1406,9 +1408,9 @@ impl DB {
                     start_key.len() as size_t,
                     end_key.as_ptr(),
                     end_key.len() as size_t,
+                    val_len_ptr,
                 );
-                let mut val_len: size_t = 0;
-                Ok(slice::from_raw_parts(val, val_len))
+                Ok(slice::from_raw_parts(val, val_len as usize))
             }
         }
     }
