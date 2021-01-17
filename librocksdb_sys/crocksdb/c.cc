@@ -4748,12 +4748,13 @@ const char* crocksdb_get_cf_range_files_metadata(
     meta += "}";
     meta += ",";
   }
-  if (meta.length() > 1){
-    meta = meta.substr(0, meta.length()-1);
+  if (meta.size() > 1){
+      meta = meta.substr(0, meta.size() - 1);
   }
   meta += "]";
   Slice result(meta);
   *size = result.size();
+  std::cout << *size << std::endl;
   return result.data();
 }
 

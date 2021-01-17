@@ -36,11 +36,30 @@ fn initial_data(path: &str) -> DB {
     db
 }
 
+fn initial_data2(path: &str) -> DB {
+    let mut opts = DBOptions::new();
+    opts.create_if_missing(true);
+    let mut cf_opts = ColumnFamilyOptions::new();
+    // We will control the compaction manually.
+    cf_opts.set_disable_auto_compactions(true);
+    let db = DB::open_cf(opts, path, vec![("default", cf_opts)]).unwrap();
+
+    {
+        let handle = db.cf_handle("default").unwrap();
+        generate_file_bottom_level(&db, handle, 0..10);
+        generate_file_bottom_level(&db, handle, 10..20);
+        generate_file_bottom_level(&db, handle, 20..30);
+    }
+
+    db
+}
+
 /// Generates a file with `range` and put it to the bottommost level.
 fn generate_file_bottom_level(db: &DB, handle: &CFHandle, range: ops::Range<u32>) {
     for i in range {
-        let k = format!("key{}", i);
-        let v = format!("value{}", i);
+        let key_buf = b"zt\x80\x00\x00\x00\x00\x00\x00\xff\x19_r\x80\x00\x00\x00\x00\xff\x08\xd6a\x00\x00\x00\x00\x00\xfa\xfa#\xc7\xa3\xd6{\xff\xc3";
+        let k = format!("key{}{:?}", i, key_buf.to_vec());
+        let v = format!("value{}{:?}", i, key_buf.to_vec());
         db.put_cf(handle, k.as_bytes(), v.as_bytes()).unwrap();
     }
     db.flush_cf(handle, true).unwrap();
@@ -206,7 +225,7 @@ fn test_delete_files_in_ranges() {
 fn test_get_sst_files_in_range() {
     let path = tempdir_with_prefix("_rust_rocksdb_get_ssts");
     let path_str = path.path().to_str().unwrap();
-    let db = initial_data(path_str);
+    let db = initial_data2(path_str);
     //let mut metadata = SSTMetaDatas::default();
     // construct snapshot before DeleteFilesInRange
     // delete sst2
